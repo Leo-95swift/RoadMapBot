@@ -19,3 +19,5 @@ enum Entrypoint {
         try await app.execute()
     }
 }
+
+let TGBOT: TGBotConnection = .init()
