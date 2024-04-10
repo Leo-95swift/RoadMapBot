@@ -1,4 +1,5 @@
 import NIOSSL
+import TelegramVaporBot
 import Fluent
 import FluentPostgresDriver
 import Leaf
@@ -19,10 +20,16 @@ public func configure(_ app: Application) async throws {
     ), as: .psql)
 
     app.migrations.add(CreateTodo())
-
     app.views.use(.leaf)
-
 
     // register routes
     try routes(app)
+    
+    let tgApi: String = "6975100681:AAFCTMsr6xdRYB3f6fnEKHxUE8w72e2hzmQ"
+    TGBot.log.logLevel = app.logger.logLevel
+    let bot: TGBot = .init(app: app, botId: tgApi)
+    await TGBOT.setConnection(try await TGLongPollingConnection(bot: bot))
+    await DefaultBotHandlers.addHandlers(app: app, connection: TGBOT.connection)
+    try await TGBOT.connection.start()
 }
+
